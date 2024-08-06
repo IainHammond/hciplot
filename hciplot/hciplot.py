@@ -504,9 +504,12 @@ def plot_frames(data, backend='matplotlib', mode='mosaic', rows=1, vmax=None,
     else:
         cbar_ticks = [None] * num_plots
 
+    # make sure the number of FWHM/beam/patches to plot is equal to the number of plots
     if patch is tuple and len(patch) != num_plots:
         raise ValueError('If `patch` is a tuple, it needs to be the same '
                          'length as the number of frames to plot.')
+    elif patch is float or patch is int:
+        patch = [patch] * num_plots  # if one value is provided, use it for all frames
 
     # LOG ----------------------------------------------------------------------
     logscale = check_bool_param(log, 'log')
@@ -826,10 +829,8 @@ def plot_frames(data, backend='matplotlib', mode='mosaic', rows=1, vmax=None,
                                  fontsize=colorbar_label_size)
 
             if patch is not None:
-                if patch is tuple:
-                    patch = patch[i]
                 beam = Circle(xy=(frame_size/10, frame_size/6),
-                              radius=patch/2, color='grey', fill=True, alpha=1)
+                              radius=patch[i]/2, color='grey', fill=True, alpha=1)
                 ax.add_artist(beam)
 
         fig.subplots_adjust(wspace=horsp, hspace=versp)
