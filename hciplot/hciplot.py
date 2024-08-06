@@ -208,10 +208,11 @@ def plot_frames(data, backend='matplotlib', mode='mosaic', rows=1, vmax=None,
         [backend='matplotlib'] Text displayed next to the colorbar.
     colorbar_label_size : int, optional
         [backend='matplotlib'] Font size for ``colorbar_label``.
-    patch : float, optional
+    patch : float, int or tuple of floats or ints, optional
         [backend='matplotlib'] Diameter of a circular patch added to the
         bottom-left of the figure to represent a beam or FWHM. For example,
-        use 5.2 to represent a FWHM of 5.2 pixels. None otherwise.
+        use 5.2 to represent a FWHM of 5.2 pixels. None otherwise. Can be a
+        tuple of length equal to the number of frames to plot.
     dpi : int, optional
         [backend='matplotlib'] Dots per inch, determines how many pixels the
         figure comprises (which affects the plot quality).
@@ -502,6 +503,10 @@ def plot_frames(data, backend='matplotlib', mode='mosaic', rows=1, vmax=None,
                             'tuples')
     else:
         cbar_ticks = [None] * num_plots
+
+    if patch is tuple and len(patch) != num_plots:
+        raise ValueError('If `patch` is a tuple, it needs to be the same '
+                         'length as the number of frames to plot.')
 
     # LOG ----------------------------------------------------------------------
     logscale = check_bool_param(log, 'log')
@@ -821,6 +826,8 @@ def plot_frames(data, backend='matplotlib', mode='mosaic', rows=1, vmax=None,
                                  fontsize=colorbar_label_size)
 
             if patch is not None:
+                if patch is list:
+                    patch = patch[i]
                 beam = Circle(xy=(frame_size/10, frame_size/6),
                               radius=patch/2, color='grey', fill=True, alpha=1)
                 ax.add_artist(beam)
