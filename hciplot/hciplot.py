@@ -826,7 +826,7 @@ def plot_frames(data, backend='matplotlib', mode='mosaic', rows=1, vmax=None,
                                  fontsize=colorbar_label_size)
 
             if patch is not None:
-                if patch is list:
+                if patch is tuple:
                     patch = patch[i]
                 beam = Circle(xy=(frame_size/10, frame_size/6),
                               radius=patch/2, color='grey', fill=True, alpha=1)
